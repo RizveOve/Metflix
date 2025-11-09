@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { getMoviesByGenre } from '../api/movieApi';
+import { getContentBySection, getMoviesByGenre } from '../api/movieApi';
+import { getMyList } from '../utils/myListStorage';
 import './MovieGrid.css';
 
-function MovieGrid({ selectedGenre, onMovieClick }) {
+function MovieGrid({ selectedGenre, selectedSection, onMovieClick }) {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,13 +14,24 @@ function MovieGrid({ selectedGenre, onMovieClick }) {
       setError(null);
       
       try {
-        console.log(`Fetching movies for genre: ${selectedGenre}`);
-        const movieData = await getMoviesByGenre(selectedGenre);
-        console.log(`Received ${movieData.data.results.length} movies for ${selectedGenre}`);
+        let movieData;
+        
+        if (selectedSection === 'my-list') {
+          // Get movies from localStorage for My List
+          const myListMovies = getMyList();
+          movieData = { data: { results: myListMovies } };
+        } else if (selectedSection) {
+          // Fetch content based on navbar section
+          movieData = await getContentBySection(selectedSection);
+        } else {
+          // Fetch content based on genre (existing functionality)
+          movieData = await getMoviesByGenre(selectedGenre);
+        }
+        
         setMovies(movieData.data.results);
       } catch (err) {
-        console.error(`Error fetching movies for ${selectedGenre}:`, err);
-        setError('Failed to load movies. Please try again.');
+        console.error(`Error fetching content:`, err);
+        setError('Failed to load content. Please try again.');
         setMovies([]);
       } finally {
         setLoading(false);
@@ -27,10 +39,21 @@ function MovieGrid({ selectedGenre, onMovieClick }) {
     };
 
     fetchMovies();
-  }, [selectedGenre]);
+  }, [selectedGenre, selectedSection]);
 
-  const getGenreTitle = (genre) => {
-    const titleMap = {
+  const getTitle = () => {
+    if (selectedSection) {
+      const sectionTitleMap = {
+        'home': 'Home - Trending & Popular',
+        'tv-shows': 'TV Shows',
+        'movies': 'Movies',
+        'new-popular': 'New & Popular',
+        'my-list': 'My List'
+      };
+      return sectionTitleMap[selectedSection] || 'Content';
+    }
+    
+    const genreTitleMap = {
       'all': 'Popular Movies',
       'action': 'Action Movies',
       'comedy': 'Comedy Movies', 
@@ -40,16 +63,16 @@ function MovieGrid({ selectedGenre, onMovieClick }) {
       'animation': 'Animation Movies',
       'documentary': 'Documentary Movies'
     };
-    return titleMap[genre] || 'Movies';
+    return genreTitleMap[selectedGenre] || 'Movies';
   };
 
   if (loading) {
     return (
       <div className="movieGrid">
-        <h2 className="movieGrid__title">{getGenreTitle(selectedGenre)}</h2>
+        <h2 className="movieGrid__title">{getTitle()}</h2>
         <div className="movieGrid__loading">
           <div className="loading-spinner"></div>
-          <p>Loading movies...</p>
+          <p>Loading content...</p>
         </div>
       </div>
     );
@@ -58,7 +81,7 @@ function MovieGrid({ selectedGenre, onMovieClick }) {
   if (error) {
     return (
       <div className="movieGrid">
-        <h2 className="movieGrid__title">{getGenreTitle(selectedGenre)}</h2>
+        <h2 className="movieGrid__title">{getTitle()}</h2>
         <div className="movieGrid__error">
           <p>{error}</p>
         </div>
@@ -66,9 +89,20 @@ function MovieGrid({ selectedGenre, onMovieClick }) {
     );
   }
 
+  if (selectedSection === 'my-list' && movies.length === 0) {
+    return (
+      <div className="movieGrid">
+        <h2 className="movieGrid__title">{getTitle()}</h2>
+        <div className="movieGrid__empty">
+          <p>Your list is empty. Add some movies and TV shows to see them here!</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="movieGrid">
-      <h2 className="movieGrid__title">{getGenreTitle(selectedGenre)}</h2>
+      <h2 className="movieGrid__title">{getTitle()}</h2>
       <div className="movieGrid__container">
         {movies.map((movie) => (
           <div 

@@ -112,6 +112,15 @@
   background-color: rgba(109, 109, 110, 0.9);
 }
 
+.movieModal__addButton--added {
+  background-color: #46d369 !important;
+  color: white;
+}
+
+.movieModal__addButton--added:hover {
+  background-color: #3bb55c !important;
+}
+
 .movieModal__info {
   padding: 40px;
 }

@@ -213,6 +213,114 @@ export const getFeaturedMovie = async () => {
   }
 };
 
+// Get TV shows
+export const getTVShows = async () => {
+  try {
+    const response = await tmdbApi.get('/tv/popular');
+    return {
+      data: {
+        results: response.data.results.map(formatMovieData)
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching TV shows:', error);
+    return { data: { results: [] } };
+  }
+};
+
+// Get now playing movies
+export const getNowPlayingMovies = async () => {
+  try {
+    const response = await tmdbApi.get('/movie/now_playing');
+    return {
+      data: {
+        results: response.data.results.map(formatMovieData)
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching now playing movies:', error);
+    return { data: { results: [] } };
+  }
+};
+
+// Get airing today TV shows
+export const getAiringTodayTV = async () => {
+  try {
+    const response = await tmdbApi.get('/tv/airing_today');
+    return {
+      data: {
+        results: response.data.results.map(formatMovieData)
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching airing today TV:', error);
+    return { data: { results: [] } };
+  }
+};
+
+// Get daily trending
+export const getDailyTrending = async () => {
+  try {
+    const response = await tmdbApi.get('/trending/all/day');
+    return {
+      data: {
+        results: response.data.results.map(formatMovieData)
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching daily trending:', error);
+    return { data: { results: [] } };
+  }
+};
+
+// Get content by navbar section
+export const getContentBySection = async (section) => {
+  try {
+    switch (section) {
+      case 'home':
+        // Combine trending and popular for home
+        const [trending, popular] = await Promise.all([
+          getTrendingMovies(),
+          getPopularMovies()
+        ]);
+        return {
+          data: {
+            results: [...trending.data.results.slice(0, 10), ...popular.data.results.slice(0, 10)]
+          }
+        };
+      
+      case 'tv-shows':
+        return await getTVShows();
+      
+      case 'movies':
+        return await getPopularMovies();
+      
+      case 'new-popular':
+        // Combine daily trending, now playing, and airing today
+        const [dailyTrending, nowPlaying, airingToday] = await Promise.all([
+          getDailyTrending(),
+          getNowPlayingMovies(),
+          getAiringTodayTV()
+        ]);
+        return {
+          data: {
+            results: [
+              ...dailyTrending.data.results.slice(0, 8),
+              ...nowPlaying.data.results.slice(0, 6),
+              ...airingToday.data.results.slice(0, 6)
+            ]
+          }
+        };
+      
+      default:
+        return await getPopularMovies();
+    }
+  } catch (error) {
+    console.error(`Error fetching content for ${section}:`, error);
+    return { data: { results: [] } };
+  }
+};
+
 // Get movie details by ID
 export const getMovieDetails = async (movieId) => {
   try {

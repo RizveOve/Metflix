@@ -10,9 +10,11 @@ import './HomeScreen.css';
 
 function HomeScreen({ user, onLogout }) {
   const [selectedGenre, setSelectedGenre] = useState('all');
+  const [selectedSection, setSelectedSection] = useState('home');
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [searchResults, setSearchResults] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [myListUpdateTrigger, setMyListUpdateTrigger] = useState(0);
 
   const getAllRows = () => [
     { title: "METFLIX ORIGINALS", genre: 'netflix', isLargeRow: true },
@@ -37,9 +39,25 @@ function HomeScreen({ user, onLogout }) {
     setSearchQuery('');
   };
 
+  const handleSectionChange = (section) => {
+    setSelectedSection(section);
+    setSelectedGenre('all'); // Reset genre when switching sections
+    clearSearch(); // Clear search when switching sections
+  };
+
+  const handleMyListUpdate = () => {
+    // Trigger re-render of My List when items are added/removed
+    setMyListUpdateTrigger(prev => prev + 1);
+  };
+
   return (
     <div className="homeScreen">
-      <Nav user={user} onLogout={onLogout} />
+      <Nav 
+        user={user} 
+        onLogout={onLogout} 
+        activeSection={selectedSection}
+        onSectionChange={handleSectionChange}
+      />
       <Banner />
       <SearchBar onSearchResults={handleSearchResults} />
       
@@ -60,27 +78,38 @@ function HomeScreen({ user, onLogout }) {
         </div>
       ) : (
         <>
-          <GenreSelector 
-            onGenreSelect={setSelectedGenre} 
-            selectedGenre={selectedGenre} 
-          />
-          
-          {selectedGenre === 'all' ? (
-            // Show all rows when "All" is selected
-            getAllRows().map((row, index) => (
-              <Row
-                key={`${row.genre}-${index}`}
-                title={row.title}
-                genre={row.genre}
-                isLargeRow={row.isLargeRow}
-                onMovieClick={setSelectedMovie}
+          {selectedSection === 'home' ? (
+            <>
+              <GenreSelector 
+                onGenreSelect={setSelectedGenre} 
+                selectedGenre={selectedGenre} 
               />
-            ))
+              
+              {selectedGenre === 'all' ? (
+                // Show all rows when "All" is selected on Home
+                getAllRows().map((row, index) => (
+                  <Row
+                    key={`${row.genre}-${index}`}
+                    title={row.title}
+                    genre={row.genre}
+                    isLargeRow={row.isLargeRow}
+                    onMovieClick={setSelectedMovie}
+                  />
+                ))
+              ) : (
+                // Show filtered movie grid when specific genre is selected
+                <MovieGrid 
+                  selectedGenre={selectedGenre}
+                  onMovieClick={setSelectedMovie}
+                />
+              )}
+            </>
           ) : (
-            // Show filtered movie grid when specific genre is selected
+            // Show content based on navbar section
             <MovieGrid 
-              selectedGenre={selectedGenre}
+              selectedSection={selectedSection}
               onMovieClick={setSelectedMovie}
+              key={`${selectedSection}-${myListUpdateTrigger}`} // Force re-render for My List updates
             />
           )}
         </>
@@ -89,7 +118,8 @@ function HomeScreen({ user, onLogout }) {
       {selectedMovie && (
         <MovieModal 
           movie={selectedMovie} 
-          onClose={() => setSelectedMovie(null)} 
+          onClose={() => setSelectedMovie(null)}
+          onMyListUpdate={handleMyListUpdate}
         />
       )}
     </div>

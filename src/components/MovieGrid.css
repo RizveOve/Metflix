@@ -100,6 +100,15 @@
   font-size: 1.1rem;
 }
 
+.movieGrid__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #999;
+  font-size: 1.1rem;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .movieGrid__container {

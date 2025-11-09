@@ -1,6 +1,30 @@
+import { useEffect, useState } from 'react';
+import { addToMyList, isInMyList, removeFromMyList } from '../utils/myListStorage';
 import './MovieModal.css';
 
-function MovieModal({ movie, onClose }) {
+function MovieModal({ movie, onClose, onMyListUpdate }) {
+  const [inMyList, setInMyList] = useState(false);
+
+  useEffect(() => {
+    if (movie) {
+      setInMyList(isInMyList(movie.id));
+    }
+  }, [movie]);
+
+  const handleMyListToggle = () => {
+    if (inMyList) {
+      removeFromMyList(movie.id);
+      setInMyList(false);
+    } else {
+      addToMyList(movie);
+      setInMyList(true);
+    }
+    
+    // Notify parent component about My List update
+    if (onMyListUpdate) {
+      onMyListUpdate();
+    }
+  };
   if (!movie) return null;
 
   return (
@@ -27,8 +51,11 @@ function MovieModal({ movie, onClose }) {
               <button className="movieModal__playButton">
                 ▶ Play
               </button>
-              <button className="movieModal__addButton">
-                + My List
+              <button 
+                className={`movieModal__addButton ${inMyList ? 'movieModal__addButton--added' : ''}`}
+                onClick={handleMyListToggle}
+              >
+                {inMyList ? '✓ In My List' : '+ My List'}
               </button>
             </div>
           </div>

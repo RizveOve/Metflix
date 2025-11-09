@@ -7,7 +7,7 @@ function LoginScreen({ onLogin }) {
   return (
     <div className="loginScreen">
       <div className="loginScreen__background">
-        <div className="loginScreen__logo">
+        <div className="loginScreen__logo" onClick={() => window.location.reload()}>
           <span className="loginScreen__logoText">MetFlix</span>
         </div>
         <button 

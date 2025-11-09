@@ -14,6 +14,12 @@
   position: fixed;
   left: 20px;
   top: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.loginScreen__logo:hover {
+  transform: scale(1.05);
 }
 
 .loginScreen__logoText {

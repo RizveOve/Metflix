@@ -23,6 +23,11 @@
   top: 10px;
   left: 20px;
   cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.nav__logo:hover {
+  transform: scale(1.05);
 }
 
 .nav__logoText {
@@ -50,6 +55,11 @@
 
 .nav__links span:hover {
   color: #b3b3b3;
+}
+
+.nav__link--active {
+  color: #e50914 !important;
+  font-weight: 600;
 }
 
 .nav__right {

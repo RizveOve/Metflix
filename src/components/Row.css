@@ -24,12 +24,13 @@
 }
 
 .row__poster {
-  height: 100px;
-  width: 160px;
+  height: 150px;
+  width: 100px;
   border-radius: 4px;
   transition: transform 450ms;
   cursor: pointer;
   border: 2px solid #333;
+  object-fit: cover;
 }
 
 .row__poster:hover {
@@ -39,7 +40,8 @@
 
 .row__posterLarge {
   height: 250px;
-  width: 160px;
+  width: 167px;
+  object-fit: cover;
 }
 
 .row__posterLarge:hover {

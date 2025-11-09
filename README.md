@@ -1,6 +1,6 @@
 # MetFlix
 
-A React-based streaming platform with movie browsing, authentication UI, and responsive design.
+A Kiro-Vibe Coded React-based streaming platform with movie browsing, authentication UI, and responsive design.
 
 ## Features
 

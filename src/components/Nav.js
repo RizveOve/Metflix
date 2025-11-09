@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './Nav.css';
 
-function Nav({ user, onLogout }) {
+function Nav({ user, onLogout, activeSection, onSectionChange }) {
   const [show, handleShow] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -18,19 +18,50 @@ function Nav({ user, onLogout }) {
     return () => window.removeEventListener("scroll", transitionNavBar);
   }, []);
 
+  const handleSectionClick = (section) => {
+    if (onSectionChange) {
+      onSectionChange(section);
+    }
+  };
+
   return (
     <div className={`nav ${show && "nav__black"}`}>
       <div className="nav__contents">
-        <div className="nav__logo">
+        <div className="nav__logo" onClick={() => handleSectionClick('home')}>
           <span className="nav__logoText">MetFlix</span>
         </div>
 
         <div className="nav__links">
-          <span>Home</span>
-          <span>TV Shows</span>
-          <span>Movies</span>
-          <span>New & Popular</span>
-          <span>My List</span>
+          <span 
+            className={activeSection === 'home' ? 'nav__link--active' : ''}
+            onClick={() => handleSectionClick('home')}
+          >
+            Home
+          </span>
+          <span 
+            className={activeSection === 'tv-shows' ? 'nav__link--active' : ''}
+            onClick={() => handleSectionClick('tv-shows')}
+          >
+            TV Shows
+          </span>
+          <span 
+            className={activeSection === 'movies' ? 'nav__link--active' : ''}
+            onClick={() => handleSectionClick('movies')}
+          >
+            Movies
+          </span>
+          <span 
+            className={activeSection === 'new-popular' ? 'nav__link--active' : ''}
+            onClick={() => handleSectionClick('new-popular')}
+          >
+            New & Popular
+          </span>
+          <span 
+            className={activeSection === 'my-list' ? 'nav__link--active' : ''}
+            onClick={() => handleSectionClick('my-list')}
+          >
+            My List
+          </span>
         </div>
 
         <div className="nav__right">
