@@ -1,15 +1,15 @@
-# Netflix Clone
+# MetFlix
 
-A React-based Netflix clone with movie browsing, authentication UI, and responsive design.
+A React-based streaming platform with movie browsing, authentication UI, and responsive design.
 
 ## Features
 
 - 🎬 Browse movies by categories (Action, Comedy, Horror, etc.)
 - 🔥 Trending and top-rated content
-- 🎯 Netflix Originals section
+- 🎯 MetFlix Originals section
 - 🔐 Login/Sign-up interface
 - 📱 Responsive design
-- 🎨 Netflix-style UI/UX
+- 🎨 Modern streaming UI/UX
 
 ## Getting Started
 

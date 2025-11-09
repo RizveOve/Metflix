@@ -21,11 +21,9 @@ function Nav({ user, onLogout }) {
   return (
     <div className={`nav ${show && "nav__black"}`}>
       <div className="nav__contents">
-        <img
-          className="nav__logo"
-          src="https://assets.stickpng.com/images/580b57fcd9996e24bc43c529.png"
-          alt="Netflix Logo"
-        />
+        <div className="nav__logo">
+          <span className="nav__logoText">MetFlix</span>
+        </div>
 
         <div className="nav__links">
           <span>Home</span>
@@ -46,7 +44,7 @@ function Nav({ user, onLogout }) {
               <div className="nav__dropdown">
                 <div className="nav__user">{user?.email}</div>
                 <div className="nav__logout" onClick={onLogout}>
-                  Sign out of Netflix
+                  Sign out of MetFlix
                 </div>
               </div>
             )}

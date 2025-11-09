@@ -7,11 +7,9 @@ function LoginScreen({ onLogin }) {
   return (
     <div className="loginScreen">
       <div className="loginScreen__background">
-        <img
-          className="loginScreen__logo"
-          src="https://assets.stickpng.com/images/580b57fcd9996e24bc43c529.png"
-          alt="Netflix Logo"
-        />
+        <div className="loginScreen__logo">
+          <span className="loginScreen__logoText">MetFlix</span>
+        </div>
         <button 
           onClick={() => setSignIn(true)}
           className="loginScreen__button"
@@ -29,7 +27,7 @@ function LoginScreen({ onLogin }) {
           <>
             <h1>Unlimited movies, TV shows, and more.</h1>
             <h2>Watch anywhere. Cancel anytime.</h2>
-            <h3>Ready to watch? Enter your email to create or restart your membership.</h3>
+            <h3>Ready to watch? Enter your email to create or restart your MetFlix membership.</h3>
 
             <div className="loginScreen__input">
               <form>
@@ -83,7 +81,7 @@ function SignInScreen({ onLogin }) {
         </button>
 
         <h4>
-          <span className="signupScreen__gray">New to Netflix? </span>
+          <span className="signupScreen__gray">New to MetFlix? </span>
           <span className="signupScreen__link" onClick={handleSubmit}>
             Sign Up now.
           </span>

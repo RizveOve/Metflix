@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import Banner from '../components/Banner';
 import GenreSelector from '../components/GenreSelector';
+import MovieGrid from '../components/MovieGrid';
 import MovieModal from '../components/MovieModal';
 import Nav from '../components/Nav';
 import Row from '../components/Row';
 import SearchBar from '../components/SearchBar';
-import requests from '../Requests';
 import './HomeScreen.css';
 
 function HomeScreen({ user, onLogout }) {
@@ -14,30 +14,18 @@ function HomeScreen({ user, onLogout }) {
   const [searchResults, setSearchResults] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const getGenreRows = () => {
-    const allRows = [
-      { title: "NETFLIX ORIGINALS", fetchUrl: requests.fetchNetflixOriginals, isLargeRow: true },
-      { title: "Trending Now", fetchUrl: requests.fetchTrending },
-      { title: "Top Rated", fetchUrl: requests.fetchTopRated },
-      { title: "Action Movies", fetchUrl: requests.fetchActionMovies, genre: 'action' },
-      { title: "Comedy Movies", fetchUrl: requests.fetchComedyMovies, genre: 'comedy' },
-      { title: "Horror Movies", fetchUrl: requests.fetchHorrorMovies, genre: 'horror' },
-      { title: "Romance Movies", fetchUrl: requests.fetchRomanceMovies, genre: 'romance' },
-      { title: "Sci-Fi Movies", fetchUrl: requests.fetchSciFiMovies, genre: 'scifi' },
-      { title: "Animation", fetchUrl: requests.fetchAnimationMovies, genre: 'animation' },
-      { title: "Documentaries", fetchUrl: requests.fetchDocumentaries, genre: 'documentary' },
-    ];
-
-    if (selectedGenre === 'all') {
-      return allRows;
-    }
-
-    return allRows.filter(row => 
-      !row.genre || row.genre === selectedGenre || 
-      row.title === "NETFLIX ORIGINALS" || 
-      row.title === "Trending Now"
-    );
-  };
+  const getAllRows = () => [
+    { title: "METFLIX ORIGINALS", genre: 'netflix', isLargeRow: true },
+    { title: "Trending Now", genre: 'trending' },
+    { title: "Top Rated", genre: 'toprated' },
+    { title: "Action Movies", genre: 'action' },
+    { title: "Comedy Movies", genre: 'comedy' },
+    { title: "Horror Movies", genre: 'horror' },
+    { title: "Romance Movies", genre: 'romance' },
+    { title: "Sci-Fi Movies", genre: 'scifi' },
+    { title: "Animation", genre: 'animation' },
+    { title: "Documentaries", genre: 'documentary' },
+  ];
 
   const handleSearchResults = (results, query) => {
     setSearchResults(results);
@@ -77,15 +65,24 @@ function HomeScreen({ user, onLogout }) {
             selectedGenre={selectedGenre} 
           />
           
-          {getGenreRows().map((row, index) => (
-            <Row
-              key={index}
-              title={row.title}
-              fetchUrl={row.fetchUrl}
-              isLargeRow={row.isLargeRow}
+          {selectedGenre === 'all' ? (
+            // Show all rows when "All" is selected
+            getAllRows().map((row, index) => (
+              <Row
+                key={`${row.genre}-${index}`}
+                title={row.title}
+                genre={row.genre}
+                isLargeRow={row.isLargeRow}
+                onMovieClick={setSelectedMovie}
+              />
+            ))
+          ) : (
+            // Show filtered movie grid when specific genre is selected
+            <MovieGrid 
+              selectedGenre={selectedGenre}
               onMovieClick={setSelectedMovie}
             />
-          ))}
+          )}
         </>
       )}
       

@@ -9,9 +9,7 @@ function Banner() {
   useEffect(() => {
     const fetchFeaturedMovie = async () => {
       try {
-        console.log('Fetching featured movie...');
         const featuredMovie = await getFeaturedMovie();
-        console.log('Featured movie received:', featuredMovie);
         setMovie(featuredMovie);
       } catch (error) {
         console.error('Error fetching featured movie:', error);

@@ -12,11 +12,17 @@
 
 .loginScreen__logo {
   position: fixed;
-  left: 0;
-  width: 150px;
-  object-fit: contain;
-  padding-left: 20px;
-  padding-top: 20px;
+  left: 20px;
+  top: 20px;
+}
+
+.loginScreen__logoText {
+  font-size: 28px;
+  font-weight: 900;
+  color: #e50914;
+  font-family: "Arial Black", Arial, sans-serif;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  letter-spacing: -1px;
 }
 
 .loginScreen__button {

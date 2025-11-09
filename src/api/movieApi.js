@@ -79,8 +79,61 @@ export const getTopRatedMovies = async () => {
   }
 };
 
-// Get movies by genre
+// Get popular movies (for "All" genre)
+export const getPopularMovies = async () => {
+  try {
+    const response = await tmdbApi.get('/movie/popular');
+    return {
+      data: {
+        results: response.data.results.map(formatMovieData)
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching popular movies:', error);
+    return { data: { results: [] } };
+  }
+};
+
+// Get movies by genre with proper TMDB genre IDs
 export const getMoviesByGenre = async (genreType) => {
+  try {
+    // TMDB Genre ID mapping
+    const genreMap = {
+      'all': () => getPopularMovies(),
+      'action': () => tmdbApi.get('/discover/movie', { params: { with_genres: 28, sort_by: 'popularity.desc' } }),
+      'comedy': () => tmdbApi.get('/discover/movie', { params: { with_genres: 35, sort_by: 'popularity.desc' } }),
+      'horror': () => tmdbApi.get('/discover/movie', { params: { with_genres: 27, sort_by: 'popularity.desc' } }),
+      'romance': () => tmdbApi.get('/discover/movie', { params: { with_genres: 10749, sort_by: 'popularity.desc' } }),
+      'scifi': () => tmdbApi.get('/discover/movie', { params: { with_genres: 878, sort_by: 'popularity.desc' } }),
+      'animation': () => tmdbApi.get('/discover/movie', { params: { with_genres: 16, sort_by: 'popularity.desc' } }),
+      'documentary': () => tmdbApi.get('/discover/movie', { params: { with_genres: 99, sort_by: 'popularity.desc' } })
+    };
+
+    const fetchFunction = genreMap[genreType];
+    if (!fetchFunction) {
+      return await getPopularMovies();
+    }
+
+    // Handle special case for "all"
+    if (genreType === 'all') {
+      return await fetchFunction();
+    }
+
+    // Handle genre-based queries
+    const response = await fetchFunction();
+    return {
+      data: {
+        results: response.data.results.map(formatMovieData)
+      }
+    };
+  } catch (error) {
+    console.error(`Error fetching ${genreType} movies:`, error);
+    return { data: { results: [] } };
+  }
+};
+
+// Legacy function for backward compatibility (used by existing rows)
+export const getMoviesByGenreLegacy = async (genreType) => {
   try {
     const genreMap = {
       'trending': () => getTrendingMovies(),
